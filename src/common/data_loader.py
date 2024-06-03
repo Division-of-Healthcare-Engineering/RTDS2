@@ -8,6 +8,8 @@ import nibabel as nib
 import pydicom
 import cv2
 from dicomrt import DicomReader  # Assuming DICOM RT Tool by Brian Anderson
+import requests
+import zipfile
 
 def load_data(file_path):
     """
@@ -113,6 +115,29 @@ def load_xml(file_path):
     tree = ET.parse(file_path)
     return tree.getroot()
 
+def download_sample_data(output_dir):
+    """
+    Download and extract sample data from the DICOM RT Tool repository.
+    
+    Args:
+        output_dir (str): Directory to save the sample data.
+    """
+    url = "https://github.com/brianmanderson/DICOM_RT_and_Images_to_Mask/archive/refs/heads/master.zip"
+    local_zip = os.path.join(output_dir, "dicom_rt_sample_data.zip")
+    
+    # Download the sample data
+    response = requests.get(url)
+    with open(local_zip, 'wb') as f:
+        f.write(response.content)
+    
+    # Extract the zip file
+    with zipfile.ZipFile(local_zip, 'r') as zip_ref:
+        zip_ref.extractall(output_dir)
+    
+    # Cleanup
+    os.remove(local_zip)
+    print("Sample data downloaded and extracted.")
+
 def create_feature_vector(patient_data):
     """
     Create a feature vector for a patient from different data sources.
@@ -196,16 +221,21 @@ def split_data(patients_data, test_size=0.2):
     
     return training_set, testing_set
 
-def load_all_data(directory):
+def load_all_data(directory, use_sample_data=False):
     """
     Load all data files from a directory and organize by patient ID.
     
     Args:
         directory (str): Path to the directory containing data files.
+        use_sample_data (bool): Whether to use sample data if actual data is not available.
     
     Returns:
         dict: Dictionary of patients' data organized by patient ID.
     """
+    if use_sample_data or not os.listdir(directory):
+        print("Using sample data...")
+        download_sample_data(directory)
+    
     patients_data = {}
     
     for root, _, files in os.walk(directory):
@@ -241,11 +271,12 @@ def load_all_data(directory):
 
 # Example usage
 if __name__ == "__main__":
-    raw_data_directory = 'path/to/raw/data'
-    output_availability_file = 'data_availability.xlsx'
+    raw_data_directory = r'C:\Users\foste\Documents\_Dev\Github\Academia\RTPlanAI\data\raw'
+    processed_data_directory = r'C:\Users\foste\Documents\_Dev\Github\Academia\RTPlanAI\data\processed'
+    output_availability_file = os.path.join(processed_data_directory, 'data_availability.xlsx')
     
     # Load all data from the raw data directory
-    patients_data = load_all_data(raw_data_directory)
+    patients_data = load_all_data(raw_data_directory, use_sample_data=True)
     
     # Export data availability
     export_data_availability(patients_data, output_availability_file)
