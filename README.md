@@ -2,7 +2,7 @@
 
 ## Description
 
-RTPlanAI is a comprehensive repository for developing, evaluating, and applying innovative AI/ML algorithms to reduce variability and improve the accuracy of radiation therapy (RT) treatment planning. This project enhances RT providers' performance during pre-treatment peer-review processes, aiming to reduce treatment planning errors and improve patient safety across multiple cancer sites.
+RTDS2 is a comprehensive repository for developing, evaluating, and applying innovative AI/ML algorithms to reduce variability and improve the accuracy of radiation therapy (RT) treatment planning. This project enhances RT providers' performance during pre-treatment peer-review processes, aiming to reduce treatment planning errors and improve patient safety across multiple cancer sites.
 
 ## Specific Aims
 
