@@ -18,8 +18,9 @@ Assess the impact of our intervention into the RT work system on patient safety.
 - **Hypothesis 2**: Implementing our intervention into the RT work system will improve patient safety.
 - **Metrics**: Number & severity of clinically relevant errors not detected during pre-treatment peer-review processes, rate per 1000 RT fractions delivered, evaluated using linear mixed effect regression (LMER) model.
 
-## Directory Structure
 
+## Directory Structure
+```plaintext
 RTPlanAI/
 │
 ├── data/
@@ -105,7 +106,7 @@ RTPlanAI/
 ├── README.md                      # Project README file
 ├── requirements.txt               # Global requirements file
 └── setup.py                       # Setup script for installing the package
-
+```
 
 ## Getting Started
 
