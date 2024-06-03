@@ -21,7 +21,7 @@ Assess the impact of our intervention into the RT work system on patient safety.
 
 ## Directory Structure
 ```plaintext
-RTPlanAI/
+RTDS2/
 │
 ├── data/
 │   ├── raw/                   # Raw DICOM files
