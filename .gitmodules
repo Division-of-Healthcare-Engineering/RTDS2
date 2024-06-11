@@ -1,0 +1,3 @@
+[submodule "src/InfoStructure"]
+	path = src/InfoStructure
+	url = https://github.com/brianmanderson/InfoStructure
