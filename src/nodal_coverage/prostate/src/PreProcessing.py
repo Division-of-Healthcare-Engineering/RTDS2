@@ -13,6 +13,16 @@ import pickle
 import pandas as pd
 
 
+def return_dataframe_from_class_list(list_classes):
+    return pd.DataFrame([vars(f) for f in list_classes])
+
+
+def write_dataframe_to_excel(excel_path: Union[str, bytes, os.PathLike], dataframe: pd.DataFrame):
+    with pd.ExcelWriter(excel_path) as writer:
+        dataframe.to_excel(writer, index=False)
+    return
+
+
 def update_database(network_path, local_path):
     today = DateTimeClass()
     today.from_python_datetime(datetime.today())
@@ -52,15 +62,34 @@ def identify_wanted_headers(patient_header_dbs: PatientHeaderDatabases,
     return out_header_dbs
 
 
+def find_all_rois(header_databases: PatientHeaderDatabases):
+    """
+    Code snippet to find the names of all rois
+    Args:
+        header_databases:
+
+    Returns:
+
+    """
+    all_rois = []
+    for header_database in header_databases.HeaderDatabases.values():
+        for pat in header_database.PatientHeaders.values():
+            for case in pat.Cases:
+                for roi in case.ROIS:
+                    if roi.Name.lower() not in all_rois:
+                        all_rois.append(roi.Name.lower())
+    reduced_all_rois = [i for i in all_rois if i.find('ptv') == -1 and i.find('0') == -1 and i.find('1') == -1 and i.find('opt') == -1 and i.find('2') == -1 and i.find('3') == -1 and i.find('hot') == -1 and i.find('cold') == -1 and i.find('avo') == -1 and i.find('norm') == -1 and i.find('tune') == -1 and i.find('5') == -1 and len(i) > 2 and i.find('ring') == -1 and i.find('couch') == -1 and i.find('arti') == -1 and i.find('max') == -1 and i.find('min') == -1 and i.find('4') == -1 and i.find('push') == -1 and i.find('shell') == -1 and i.find('warm') == -1]
+    wanted_rois = [i for i in all_rois if i.find('nodes') != -1 or i.find('prost') != -1]
+
+
 class RegionOfInterestClass:
+    DataBase: str
+    MRN: str
     ROIName: str  # Prostate, Breast
     ROIVolume: float
     ROIType: str  # CTV, PTV, GTV, Organ
-
-
-class PatientInfo:
-    ROIs: List[RegionOfInterestClass]
-    MRN: str
+    Case: str
+    Exam: str
 
 
 def find_prostate_patients():
@@ -87,15 +116,50 @@ def find_prostate_patients():
     """
     Based on the desired ROIs, send back a subset of patients
     """
+    roi_associations = {}
+    roi_associations['prostate'] = ['prostate', 'prostate only']
+    roi_associations['nodes'] = ['nodes', 'pelvic nodes', 'lymph nodes',
+                                 'lymphnodes', 'pelvicnodes']
+    wanted_rois = []
+    for key in roi_associations.keys():
+        wanted_rois += roi_associations[key]
     header_databases = identify_wanted_headers(header_databases,
                                                wanted_type=['gtv', 'ctv'],
-                                               wanted_roi_list=['prostate'])
+                                               wanted_roi_list=wanted_rois)
+
     """
     Now, load up all patient info
     Note that this includes all plans
     """
     databases = header_databases.return_patient_databases(tqdm)
     databases.delete_unapproved_patients()
+    out_rois: List[RegionOfInterestClass]
+    out_rois = []
+    mrns = []
+    db_list = ['10ASP1', 'Deceased', '2023', '2022', '2021', '2020', '2019', '2018',
+               '2017', '2016']
+    for db_name in db_list:
+        db = databases.Databases[db_name]
+        for patient in db.Patients.values():
+            if patient.MRN in mrns:
+                continue
+            mrns.append(patient.MRN)
+            for case in patient.Cases:
+                for exam in case.Examinations:
+                    for roi in exam.ROIs:
+                        if roi.Name.lower() in wanted_rois:
+                            base_roi = [i for i in case.Base_ROIs if i.RS_Number == roi.RS_Number]
+                            new_roi = RegionOfInterestClass()
+                            new_roi.DataBase = db_name
+                            new_roi.MRN = patient.MRN
+                            new_roi.Exam = exam.ExamName
+                            new_roi.Case = case.CaseName
+                            new_roi.ROIName = roi.Name
+                            new_roi.ROIType = base_roi[0].Type
+                            new_roi.ROIVolume = roi.Volume
+                            out_rois.append(new_roi)
+    out_dataframe = return_dataframe_from_class_list(out_rois)
+    write_dataframe_to_excel(os.path.join('.', "ProstateNodePatients.xlsx"), out_dataframe)
 
 
 if __name__ == '__main__':
