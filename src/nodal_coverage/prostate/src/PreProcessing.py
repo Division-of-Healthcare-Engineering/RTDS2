@@ -76,6 +76,7 @@ def find_all_rois(header_databases: PatientHeaderDatabases):
 class RegionOfInterestClass:
     DataBase: str
     MRN: str
+    Physician: str
     ROIName: str  # Prostate, Breast
     ROIVolume: float
     ROIType: str  # CTV, PTV, GTV, Organ
@@ -136,19 +137,31 @@ def find_prostate_patients():
                 continue
             mrns.append(patient.MRN)
             for case in patient.Cases:
-                for exam in case.Examinations:
-                    for roi in exam.ROIs:
-                        if roi.Name.lower() in wanted_rois:
-                            base_roi = [i for i in case.Base_ROIs if i.RS_Number == roi.RS_Number]
-                            new_roi = RegionOfInterestClass()
-                            new_roi.DataBase = db_name
-                            new_roi.MRN = patient.MRN
-                            new_roi.Exam = exam.ExamName
-                            new_roi.Case = case.CaseName
-                            new_roi.ROIName = roi.Name
-                            new_roi.ROIType = base_roi[0].Type
-                            new_roi.ROIVolume = roi.Volume
-                            out_rois.append(new_roi)
+                for plan in case.TreatmentPlans:
+                    if plan.Review is not None:
+                        review: ReviewClass
+                        review = plan.Review
+                        if review.ApprovalStatus == 'Approved':
+                            exams = [e for e in case.Examinations if e.ExamName == plan.Referenced_Exam_Name]
+                            for exam in exams:
+                                for roi in exam.ROIs:
+                                    base_roi = [i for i in case.Base_ROIs if i.RS_Number == roi.RS_Number]
+                                    if not base_roi:
+                                        continue
+                                    if (roi.Name.lower() in wanted_rois or
+                                            (roi.Name.lower().find('opt') == -1 and base_roi[0].Type.lower() == 'ptv')):
+                                        new_roi = RegionOfInterestClass()
+                                        new_roi.DataBase = db_name
+                                        reviewer = review.ReviewerName
+                                        reviewer = reviewer.replace('UNCH','').replace("\\", '')
+                                        new_roi.Physician = reviewer
+                                        new_roi.MRN = patient.MRN
+                                        new_roi.Exam = exam.ExamName
+                                        new_roi.Case = case.CaseName
+                                        new_roi.ROIName = roi.Name
+                                        new_roi.ROIType = base_roi[0].Type
+                                        new_roi.ROIVolume = roi.Volume
+                                        out_rois.append(new_roi)
     out_dataframe = return_dataframe_from_class_list(out_rois)
     write_dataframe_to_excel(os.path.join('.', "ProstateNodePatients.xlsx"), out_dataframe)
 
