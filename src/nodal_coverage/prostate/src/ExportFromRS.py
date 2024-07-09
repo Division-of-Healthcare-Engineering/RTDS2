@@ -11,7 +11,7 @@ def excel_to_text():
     fid = open(os.path.join('.', 'rs_patients.txt'), 'w+')
     for i in range(df.shape[0]):
         if df['ROIName'][i].lower() == 'prostate':
-            if 35 <= df['ROIVolume'][i] <= 47:
+            if 30 <= df['ROIVolume'][i] <= 50:
                 fid.write(df["MRN"][i] + '|' + df['Case'][i] + '|' + df['Exam'][i] + '|' + df['ROIName'][i] + '\n')
     fid.close()
 
@@ -19,6 +19,7 @@ def excel_to_text():
 def main():
     if not os.path.exists(os.path.join('.', 'rs_patients.txt')):
         excel_to_text()
+        return
     pats_to_export = []
     fid = open(os.path.join('.', 'rs_patients.txt'))
     pats = fid.readlines()
@@ -48,8 +49,8 @@ def main():
         export_class.set_patient(pat)
         if export_class.RSPatient is None:
             continue
-        export_class.export_rois_as_meta_images(pat)
-        export_class.export_examinations(pat)
+        export_class.export_examinations_and_structures(pat)
+        break
 
 
 if __name__ == '__main__':
