@@ -46,10 +46,13 @@ def main():
     for pat in pats_to_export:
         if os.path.exists(os.path.join(base_export_path, pat.RS_UID)):
             continue
-        export_class.set_patient(pat)
+        try:
+            export_class.set_patient(pat)
+        except:
+            continue
         if export_class.RSPatient is None:
             continue
-        export_class.export_examinations(pat)
+        export_class.export_examinations_and_structures(pat)
         export_class.export_rois_as_meta_images(pat)
 
 
