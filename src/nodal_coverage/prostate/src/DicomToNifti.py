@@ -4,6 +4,7 @@ from PlotScrollNumpyArrays.Plot_Scroll_Images import plot_scroll_Image
 from DicomRTTool.ReaderWriter import DicomReaderWriter, ROIAssociationClass
 from typing import *
 
+
 def sum_images(image_handles: List[sitk.Image]):
     # Read the first image
     sum_image = image_handles[0]
