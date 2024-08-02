@@ -39,13 +39,13 @@ def resize_image(image, target_size):
 
 def preprocess_clinical_data(clinical_data):
     """
-    Preprocess clinical data.
+    Preprocess clinical Data.
     
     Args:
-        clinical_data (pd.DataFrame): Clinical data to be preprocessed.
+        clinical_data (pd.DataFrame): Clinical Data to be preprocessed.
     
     Returns:
-        pd.DataFrame: Preprocessed clinical data.
+        pd.DataFrame: Preprocessed clinical Data.
     """
     # Example: Fill missing values and standardize numerical columns
     clinical_data = clinical_data.fillna(clinical_data.mean())
@@ -55,15 +55,15 @@ def preprocess_clinical_data(clinical_data):
 
 def preprocess_image_data(image_data, target_size=(256, 256), normalization_method='z-score'):
     """
-    Preprocess image data.
+    Preprocess image Data.
     
     Args:
-        image_data (np.array): Image data to be preprocessed.
+        image_data (np.array): Image Data to be preprocessed.
         target_size (tuple): Target size for resizing images.
         normalization_method (str): Method for normalizing images.
     
     Returns:
-        np.array: Preprocessed image data.
+        np.array: Preprocessed image Data.
     """
     preprocessed_images = []
     for image in image_data:
@@ -74,12 +74,12 @@ def preprocess_image_data(image_data, target_size=(256, 256), normalization_meth
 
 # Example usage
 if __name__ == "__main__":
-    # Example: Load and preprocess clinical data
+    # Example: Load and preprocess clinical Data
     clinical_data = pd.read_csv('path/to/clinical_data.csv')
     preprocessed_clinical_data = preprocess_clinical_data(clinical_data)
     print(preprocessed_clinical_data.head())
 
-    # Example: Load and preprocess image data
-    image_data = [np.random.rand(512, 512) for _ in range(10)]  # Dummy data
+    # Example: Load and preprocess image Data
+    image_data = [np.random.rand(512, 512) for _ in range(10)]  # Dummy Data
     preprocessed_images = preprocess_image_data(image_data, target_size=(256, 256), normalization_method='min-max')
     print(preprocessed_images.shape)

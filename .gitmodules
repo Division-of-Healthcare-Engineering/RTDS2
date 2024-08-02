@@ -1,3 +1,6 @@
 [submodule "src/InfoStructure"]
 	path = src/InfoStructure
 	url = https://github.com/brianmanderson/InfoStructure
+[submodule "src/nodal_coverage/prostate/src/UNC_ProstateSegmentation"]
+	path = src/nodal_coverage/prostate/src/UNC_ProstateSegmentation
+	url = https://github.com/brianmanderson/UNC_ProstateSegmentation

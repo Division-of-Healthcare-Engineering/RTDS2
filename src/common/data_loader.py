@@ -13,13 +13,13 @@ import zipfile
 
 def load_data(file_path):
     """
-    Load data based on file extension.
+    Load Data based on file extension.
     
     Args:
-        file_path (str): Path to the data file.
+        file_path (str): Path to the Data file.
     
     Returns:
-        data: Loaded data.
+        Data: Loaded Data.
     """
     extension = os.path.splitext(file_path)[1].lower()
     
@@ -46,7 +46,7 @@ def load_dicom(file_path):
         file_path (str): Path to the DICOM file.
     
     Returns:
-        tuple: (np.array: DICOM image data, dict: metadata).
+        tuple: (np.array: DICOM image Data, dict: metadata).
     """
     dicom_reader = DicomReader(file_path)
     return dicom_reader.get_image(), dicom_reader.get_metadata()
@@ -59,7 +59,7 @@ def load_nifti(file_path):
         file_path (str): Path to the NIfTI file.
     
     Returns:
-        tuple: (np.array: NIfTI image data, dict: metadata).
+        tuple: (np.array: NIfTI image Data, dict: metadata).
     """
     img = nib.load(file_path)
     return img.get_fdata(), img.header
@@ -72,7 +72,7 @@ def load_image(file_path):
         file_path (str): Path to the image file.
     
     Returns:
-        np.array: Image data.
+        np.array: Image Data.
     """
     image = Image.open(file_path)
     return np.array(image)
@@ -85,7 +85,7 @@ def load_nrrd(file_path):
         file_path (str): Path to the NRRD file.
     
     Returns:
-        tuple: (np.array: NRRD image data, dict: metadata).
+        tuple: (np.array: NRRD image Data, dict: metadata).
     """
     img = sitk.ReadImage(file_path)
     return sitk.GetArrayFromImage(img), sitk.ReadImage(file_path)
@@ -98,7 +98,7 @@ def load_excel(file_path):
         file_path (str): Path to the Excel file.
     
     Returns:
-        pd.DataFrame: Loaded Excel data.
+        pd.DataFrame: Loaded Excel Data.
     """
     return pd.read_excel(file_path)
 
@@ -117,15 +117,15 @@ def load_xml(file_path):
 
 def download_sample_data(output_dir):
     """
-    Download and extract sample data from the DICOM RT Tool repository.
+    Download and extract sample Data from the DICOM RT Tool repository.
     
     Args:
-        output_dir (str): Directory to save the sample data.
+        output_dir (str): Directory to save the sample Data.
     """
     url = "https://github.com/brianmanderson/DICOM_RT_and_Images_to_Mask/archive/refs/heads/master.zip"
     local_zip = os.path.join(output_dir, "dicom_rt_sample_data.zip")
     
-    # Download the sample data
+    # Download the sample Data
     response = requests.get(url)
     with open(local_zip, 'wb') as f:
         f.write(response.content)
@@ -136,14 +136,14 @@ def download_sample_data(output_dir):
     
     # Cleanup
     os.remove(local_zip)
-    print("Sample data downloaded and extracted.")
+    print("Sample Data downloaded and extracted.")
 
 def create_feature_vector(patient_data):
     """
-    Create a feature vector for a patient from different data sources.
+    Create a feature vector for a patient from different Data sources.
     
     Args:
-        patient_data (dict): Dictionary containing patient data.
+        patient_data (dict): Dictionary containing patient Data.
     
     Returns:
         dict: Feature vector for the patient.
@@ -155,22 +155,22 @@ def create_feature_vector(patient_data):
         'clinical': None
     }
 
-    # Add CT data
+    # Add CT Data
     if 'ct' in patient_data:
         ct_image, ct_metadata = patient_data['ct']
-        feature_vector['ct'] = {'data': ct_image, 'metadata': ct_metadata}
+        feature_vector['ct'] = {'Data': ct_image, 'metadata': ct_metadata}
     
-    # Add MRI data
+    # Add MRI Data
     if 'mri' in patient_data:
         mri_image, mri_metadata = patient_data['mri']
-        feature_vector['mri'] = {'data': mri_image, 'metadata': mri_metadata}
+        feature_vector['mri'] = {'Data': mri_image, 'metadata': mri_metadata}
     
-    # Add PET data
+    # Add PET Data
     if 'pet' in patient_data:
         pet_image, pet_metadata = patient_data['pet']
-        feature_vector['pet'] = {'data': pet_image, 'metadata': pet_metadata}
+        feature_vector['pet'] = {'Data': pet_image, 'metadata': pet_metadata}
     
-    # Add clinical data
+    # Add clinical Data
     if 'clinical' in patient_data:
         clinical_data = patient_data['clinical']
         feature_vector['clinical'] = clinical_data
@@ -179,10 +179,10 @@ def create_feature_vector(patient_data):
 
 def export_data_availability(patients_data, output_path):
     """
-    Export an Excel sheet indicating data availability for each patient.
+    Export an Excel sheet indicating Data availability for each patient.
     
     Args:
-        patients_data (dict): Dictionary containing data for all patients.
+        patients_data (dict): Dictionary containing Data for all patients.
         output_path (str): Path to save the Excel sheet.
     """
     records = []
@@ -201,11 +201,11 @@ def export_data_availability(patients_data, output_path):
 
 def split_data(patients_data, test_size=0.2):
     """
-    Split data into training and testing sets.
+    Split Data into training and testing sets.
     
     Args:
-        patients_data (dict): Dictionary containing data for all patients.
-        test_size (float): Proportion of the data to include in the test split.
+        patients_data (dict): Dictionary containing Data for all patients.
+        test_size (float): Proportion of the Data to include in the test split.
     
     Returns:
         tuple: (training_set, testing_set)
@@ -223,17 +223,17 @@ def split_data(patients_data, test_size=0.2):
 
 def load_all_data(directory, use_sample_data=False):
     """
-    Load all data files from a directory and organize by patient ID.
+    Load all Data files from a directory and organize by patient ID.
     
     Args:
-        directory (str): Path to the directory containing data files.
-        use_sample_data (bool): Whether to use sample data if actual data is not available.
+        directory (str): Path to the directory containing Data files.
+        use_sample_data (bool): Whether to use sample Data if actual Data is not available.
     
     Returns:
-        dict: Dictionary of patients' data organized by patient ID.
+        dict: Dictionary of patients' Data organized by patient ID.
     """
     if use_sample_data or not os.listdir(directory):
-        print("Using sample data...")
+        print("Using sample Data...")
         download_sample_data(directory)
     
     patients_data = {}
@@ -258,7 +258,7 @@ def load_all_data(directory, use_sample_data=False):
                     elif file.endswith('.nrrd'):
                         patients_data[patient_id]['pet'] = data
                 else:
-                    # Handle clinical data
+                    # Handle clinical Data
                     if file.endswith(('.xlsx', '.xls')):
                         patients_data[patient_id]['clinical'] = data
                     elif file.endswith('.xml'):
@@ -275,12 +275,12 @@ if __name__ == "__main__":
     processed_data_directory = r'C:\Users\foste\Documents\_Dev\Github\Academia\RTPlanAI\data\processed'
     output_availability_file = os.path.join(processed_data_directory, 'data_availability.xlsx')
     
-    # Load all data from the raw data directory
+    # Load all Data from the raw Data directory
     patients_data = load_all_data(raw_data_directory, use_sample_data=True)
     
-    # Export data availability
+    # Export Data availability
     export_data_availability(patients_data, output_availability_file)
     
-    # Split data into training and testing sets
+    # Split Data into training and testing sets
     training_set, testing_set = split_data(patients_data, test_size=0.2)
     print(f"Training set size: {len(training_set)}, Testing set size: {len(testing_set)}")

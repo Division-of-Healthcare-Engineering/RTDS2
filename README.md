@@ -144,7 +144,7 @@ Make sure you have the following dependencies installed:
 1. **Data Preprocessing**:
     Run the data preprocessing script to convert raw DICOM files into numpy arrays and preprocess them for training:
     ```bash
-    python src/data/data_loader.py
+    python src/Data/data_loader.py
     ```
 
 2. **Model Training**:
