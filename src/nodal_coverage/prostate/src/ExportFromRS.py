@@ -41,16 +41,19 @@ def main():
         patient.Cases.append(case)
         pats_to_export.append(patient)
     export_class = ExportBaseClass()
-    base_export_path = r'\\vscifs1\PhysicsQAdata\BMA\new_test'
+    base_export_path = r'\\vscifs1\PhysicsQAdata\BMA\Prostate_Nodes'
     export_class.set_export_path(base_export_path)
     for pat in pats_to_export:
         if os.path.exists(os.path.join(base_export_path, pat.RS_UID)):
             continue
-        export_class.set_patient(pat)
+        try:
+            export_class.set_patient(pat)
+        except:
+            continue
         if export_class.RSPatient is None:
             continue
         export_class.export_examinations_and_structures(pat)
-        break
+        export_class.export_rois_as_meta_images(pat)
 
 
 if __name__ == '__main__':
