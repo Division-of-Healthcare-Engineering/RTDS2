@@ -4,3 +4,9 @@
 [submodule "src/nodal_coverage/prostate/src/UNC_ProstateSegmentation"]
 	path = src/nodal_coverage/prostate/src/UNC_ProstateSegmentation
 	url = https://github.com/brianmanderson/UNC_ProstateSegmentation
+[submodule "src/nodal_coverage/prostate/nodes/UNC_ProstateNodeSegmentation"]
+	path = src/nodal_coverage/prostate/nodes/UNC_ProstateNodeSegmentation
+	url = https://github.com/brianmanderson/UNC_ProstateNodeSegmentation
+[submodule "src/nodal_coverage/prostate/src/UNC_ProstateNodeSegmentation"]
+	path = src/nodal_coverage/prostate/src/UNC_ProstateNodeSegmentation
+	url = https://github.com/brianmanderson/UNC_ProstateNodeSegmentation
